@@ -43,7 +43,9 @@ typedef struct {
     volatile long final_advance;
     float advance;
   #endif
-
+  #if (ENABLED(COREXY) || ENABLED(COREXZ))
+    bool is_axis_moving[NUM_AXIS];			// needed for the homing of corexn
+  #endif
   // Fields used by the motion planner to manage acceleration
   // float speed_x, speed_y, speed_z, speed_e;          // Nominal mm/sec for each axis
   float nominal_speed;                               // The nominal speed for this block in mm/sec 
@@ -168,3 +170,4 @@ FORCE_INLINE block_t *plan_get_current_block() {
 void reset_acceleration_rates();
 
 #endif // PLANNER_H
+

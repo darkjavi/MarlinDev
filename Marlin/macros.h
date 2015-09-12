@@ -1,6 +1,8 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#include <math.h>
+
 // Macros for bit masks
 #define BIT(b) (1<<(b))
 #define TEST(n,b) (((n)&BIT(b))!=0)
@@ -23,5 +25,10 @@
 #define DISABLED(b) (!_CAT(SWITCH_ENABLED_, b))
 
 #define COUNT(a) (sizeof(a)/sizeof(*a))
+
+// float helpers
+#define EPSILON ((float)0.0000001)
+inline bool nearly_zero(float x) { return fabs(x) < EPSILON; }
+inline bool nearly_equal(float x, float y) { return nearly_zero(x - y); }
 
 #endif //__MACROS_H

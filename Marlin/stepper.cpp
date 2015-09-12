@@ -309,13 +309,18 @@ inline void update_endstops() {
   // TEST_ENDSTOP: test the old and the current status of an endstop
   #define TEST_ENDSTOP(ENDSTOP) (TEST(current_endstop_bits, ENDSTOP) && TEST(old_endstop_bits, ENDSTOP))
 
-  #define UPDATE_ENDSTOP(AXIS,MINMAX) \
+  #define _UPDATE_ENDSTOP(AXIS,MINMAX,FIELD) \
     SET_ENDSTOP_BIT(AXIS, MINMAX); \
-    if (TEST_ENDSTOP(_ENDSTOP(AXIS, MINMAX))  && (current_block->steps[_AXIS(AXIS)] > 0)) { \
+    if (TEST_ENDSTOP(_ENDSTOP(AXIS, MINMAX)) && current_block->FIELD[_AXIS(AXIS)] > 0) { \
       endstops_trigsteps[_AXIS(AXIS)] = count_position[_AXIS(AXIS)]; \
       _ENDSTOP_HIT(AXIS); \
       step_events_completed = current_block->step_event_count; \
     }
+  #if ENABLED(COREXY) || ENABLED(COREXZ)
+    #define UPDATE_ENDSTOP(AXIS,MINMAX) _UPDATE_ENDSTOP(AXIS,MINMAX,is_axis_moving)
+  #else
+    #define UPDATE_ENDSTOP(AXIS,MINMAX) _UPDATE_ENDSTOP(AXIS,MINMAX,steps)
+  #endif
   
   #if ENABLED(COREXY)
     // Head direction in -X axis for CoreXY bots.
@@ -1311,3 +1316,4 @@ void microstep_readings() {
   void Lock_z_motor(bool state) { locked_z_motor = state; }
   void Lock_z2_motor(bool state) { locked_z2_motor = state; }
 #endif
+

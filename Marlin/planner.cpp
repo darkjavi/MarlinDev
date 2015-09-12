@@ -544,11 +544,19 @@ float junction_deviation = 0.1;
     block->steps[A_AXIS] = labs(dx + dy);
     block->steps[B_AXIS] = labs(dx - dy);
     block->steps[Z_AXIS] = labs(dz);
+    block->is_axis_moving[X_AXIS] = !nearly_zero(dx);
+    block->is_axis_moving[Y_AXIS] = !nearly_zero(dy);
+    block->is_axis_moving[Z_AXIS] = !nearly_zero(dz);
+    block->is_axis_moving[E_AXIS] = !nearly_zero(de);    
   #elif ENABLED(COREXZ)
     // corexz planning
     block->steps[A_AXIS] = labs(dx + dz);
     block->steps[Y_AXIS] = labs(dy);
     block->steps[C_AXIS] = labs(dx - dz);
+    block->is_axis_moving[X_AXIS] = !nearly_zero(dx);
+    block->is_axis_moving[Y_AXIS] = !nearly_zero(dy);
+    block->is_axis_moving[Z_AXIS] = !nearly_zero(dz);
+    block->is_axis_moving[E_AXIS] = !nearly_zero(de);
   #else
     // default non-h-bot planning
     block->steps[X_AXIS] = labs(dx);
@@ -1039,3 +1047,4 @@ void reset_acceleration_rates() {
   for (int i = 0; i < NUM_AXIS; i++)
     axis_steps_per_sqr_second[i] = max_acceleration_units_per_sq_second[i] * axis_steps_per_unit[i];
 }
+
